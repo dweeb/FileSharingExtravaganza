@@ -2,7 +2,7 @@ package Packet;
 
 /**
  *      Fields in packet:
- *          bits 0,1 : packet length. Generated from a char (the only unsigned type, with a very fitting range and size)
+ *          byte 0,1 : packet length. Generated from a char (the only unsigned type, with a very fitting range and size)
  *              at origin and consolidated back into a char at destination using getBytes()
  */
 
@@ -19,10 +19,8 @@ public class Packet {
     protected Packet(){};
     public char getBytes(){
         return (char)(
-                        (packet[0] & 0xFF)              //  <- has to be masked to avoid signed-to-unsigned shenanigans
-                                |                       //  (bit shift seems to implicitly cast everything to int, which
-                                                        //  is signed and thus fills empty space with ones for negative
-                                                        //  numbers)
+                        (packet[0] & 0xFF)              //  has to be masked because casting a signed negative byte
+                                |                       //  to a larger type fills the space with 1's
                         (char)((char)packet[1] << 8)    //  t. spent half an hour getting this right
         );
     }

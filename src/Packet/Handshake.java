@@ -4,8 +4,8 @@ import Header.HeaderLiterals;
 
 /**
  *      Fields in handshake packet:
- *          bits 0,1 : packet length. see Packet
- *          bit 2 :    handshake flag
+ *          byte 0,1 : packet length. see Packet
+ *          byte 2 :    handshake flag
  */
 
 public class Handshake extends Packet{

@@ -3,6 +3,15 @@ package Packet;
 import Files.FilesListEntry;
 import Header.HeaderLiterals;
 
+/**
+ *      Fields in FileListing packet:
+ *          byte 0,1    : packet length. see Packet
+ *          byte 2      : listing flag
+ *          byte 3..11  : filesize
+ *          byte 13..29 : MD5 hash
+ *          byte 30...  : filename
+ */
+
 public class FileListing extends Packet{
     public FileListing(byte[] packet) {
         super(packet);
@@ -17,7 +26,7 @@ public class FileListing extends Packet{
         System.arraycopy(hash, 0, packet, 3+size.length, hash.length);
         System.arraycopy(name, 0, packet, 3+size.length+hash.length, name.length);
     }
-    public byte[] longToByteArr(long l){
+    private byte[] longToByteArr(long l){
         int arrSize = Long.SIZE / Byte.SIZE;
         byte[] result = new byte[arrSize];
         for(int i=0; i<arrSize; i++){
@@ -25,7 +34,7 @@ public class FileListing extends Packet{
         }
         return result;
     }
-    public long byteArrToLong(byte[] b){
+    private long byteArrToLong(byte[] b){
         long result = 0;
         for(int i=0; i<b.length; i++){
             result |= (b[i] & 0xFFl) << (i*8);

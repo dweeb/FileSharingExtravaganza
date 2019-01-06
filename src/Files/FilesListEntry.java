@@ -8,7 +8,7 @@ public class FilesListEntry {
     byte[] hash;
     long size;
     String filename;
-    protected FilesListEntry(File f) throws NoSuchAlgorithmException, IOException {
+    public FilesListEntry(File f) throws NoSuchAlgorithmException, IOException {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f));
         int bytesRead;
