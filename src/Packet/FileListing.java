@@ -34,7 +34,7 @@ public class FileListing extends Packet{
         }
         return result;
     }
-    private long byteArrToLong(byte[] b){
+    public long byteArrToLong(byte[] b){
         long result = 0;
         for(int i=0; i<b.length; i++){
             result |= (b[i] & 0xFFl) << (i*8);

@@ -1,4 +1,5 @@
-import java.io.*;
+package HostBehavior;
+
 import java.net.Socket;
 
 public class FileSeeder implements Runnable{

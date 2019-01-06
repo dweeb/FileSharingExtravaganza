@@ -13,7 +13,8 @@ public class Handshake extends Packet{
         super((char)3);
         this.packet[2] = HeaderLiterals.handshake;
     }
-    byte[] getPacket(){
+    public Handshake(byte[] b){ super(b);}
+    public byte[] getPacket(){
         return packet;
     }
 }

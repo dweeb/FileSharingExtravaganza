@@ -6,8 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class FilesList {
-    ArrayList<FilesListEntry> listing = new ArrayList<>();
+    private ArrayList<FilesListEntry> listing;
     public FilesList(File path) throws NoSuchAlgorithmException {
+        listing = new ArrayList<>();
         File[] files = path.listFiles();
         for(File f : files){
             if(!f.isDirectory())
@@ -17,5 +18,11 @@ public class FilesList {
                     e.printStackTrace();
                 }
         }
+    }
+    public FilesList(){
+        listing = new ArrayList<>();
+    }
+    public void add(FilesListEntry e){
+        listing.add(e);
     }
 }

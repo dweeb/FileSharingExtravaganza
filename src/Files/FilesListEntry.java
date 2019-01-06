@@ -1,8 +1,11 @@
 package Files;
 
+import Packet.FileListing;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class FilesListEntry {
     byte[] hash;
@@ -20,6 +23,12 @@ public class FilesListEntry {
         }
         hash = md5.digest();
         filename = f.getName();
+    }
+    public FilesListEntry(FileListing packet){
+        size = packet.byteArrToLong(Arrays.copyOfRange(packet.getPacket(), 3, 11));
+        hash = new byte[16];
+        System.arraycopy(packet.getPacket(), 12, hash, 0, 16);
+        filename = new String(Arrays.copyOfRange(packet.getPacket(), 30, packet.getPacket().length-1));
     }
     public byte[] getHash() {
         return hash;
