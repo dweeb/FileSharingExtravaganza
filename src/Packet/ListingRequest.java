@@ -3,7 +3,7 @@ package Packet;
 import Header.HeaderLiterals;
 
 /**
- *      Fields in handshake packet:
+ *      Fields in listing request packet:
  *          byte 0,1 : packet length. see Packet
  *          byte 2   : listing request flag flag
  */

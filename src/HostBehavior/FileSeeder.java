@@ -2,7 +2,7 @@ package HostBehavior;
 
 import java.net.Socket;
 
-public class FileSeeder implements Runnable{
+public class FileSeeder extends Host implements Runnable{
     Socket socket;
     public FileSeeder(Socket socket){
         this.socket = socket;

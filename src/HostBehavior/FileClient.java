@@ -10,15 +10,17 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 
-public class FileClient implements Runnable{
+public class FileClient extends Host implements Runnable{
     String server;
     int port;
     public FileClient(String server){
         this.server = server;
         this.port = port;
     }
-    public static final int MAX_PACKET_SIZE = 1200;
+    public static final int MAX_PACKET_SIZE = 1030; //  actual max possible size should be 1027 given the specifics of payload packet
+    public static final int DATA_IN_SIZE = 1024 * 8;
     @Override
     public void run() {
         try(
@@ -32,8 +34,7 @@ public class FileClient implements Runnable{
             //  all necessary vars initialized here
             //
             FilesList serversList = new FilesList();
-            byte lastFlag = HeaderLiterals.handshake;
-            byte[] dataIn = new byte[MAX_PACKET_SIZE];
+            byte[] dataIn = new byte[DATA_IN_SIZE];
             byte[] temp = new byte[MAX_PACKET_SIZE];
             boolean inMiddleOfPacket = false;
             int bytesRead;
@@ -43,13 +44,12 @@ public class FileClient implements Runnable{
             //
             //  main loop
             //
-            while((bytesRead = in.read(dataIn, leftover, MAX_PACKET_SIZE)) != -1){
+            while((bytesRead = in.read(dataIn, leftover, DATA_IN_SIZE - leftover)) != -1){
                 int bytesProcessed = 0;
                 while(bytesRead - bytesProcessed >= 3){
                     if(!inMiddleOfPacket){
                         currentPacketLength = Packet.getNumberOfBytes(dataIn[bytesProcessed], dataIn[bytesProcessed+1]);
                         currentPacketDone = 0;
-                        lastFlag = dataIn[bytesProcessed + 2];
                     }
                     int leftInDataIn = bytesRead - bytesProcessed;
                     int leftToCompleteTemp = currentPacketLength - currentPacketDone;
@@ -59,10 +59,17 @@ public class FileClient implements Runnable{
                         currentPacketDone += leftInDataIn;
                         bytesProcessed = leftInDataIn;
                     } else {
-                        inMiddleOfPacket = false;
-                        System.arraycopy(dataIn, bytesProcessed, temp, currentPacketDone, leftToCompleteTemp);
+                        byte[] completedPacket;
+                        if(!inMiddleOfPacket){
+                            completedPacket = Arrays.copyOfRange(dataIn, bytesRead, bytesRead + currentPacketLength - 1);
+                        } else {
+                            inMiddleOfPacket = false;
+                            System.arraycopy(dataIn, bytesProcessed, temp, currentPacketDone, leftToCompleteTemp);
+                            completedPacket = Arrays.copyOfRange(temp, 0, currentPacketLength - 1);
+                        }
                         bytesProcessed += leftToCompleteTemp;
                         currentPacketDone += leftToCompleteTemp;
+                        servicePacket(completedPacket);
                     }
                 }
                 if(bytesRead - bytesProcessed > 0){
@@ -89,23 +96,6 @@ public class FileClient implements Runnable{
         while((read += in.read(b, read, 3-read)) != 3){Thread.sleep(10);}
         if(new Handshake(b).getNumberOfBytes() == 3 && b[2] == HeaderLiterals.handshake) return true;
         return false;
-    }
-    private void servicePacket(byte lastFlag){
-        switch (lastFlag){
-            case HeaderLiterals.fileListing : {
-                break;
-            }
-            case HeaderLiterals.endOfListing : {
-                break;
-            }
-            case HeaderLiterals.payload : {
-                break;
-            }
-            default : {
-                System.err.println("This was unexpected");
-                break;
-            }
-        }
     }
 }
 
