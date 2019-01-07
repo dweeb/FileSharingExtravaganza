@@ -4,25 +4,32 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class FilesList {
-    private ArrayList<FilesListEntry> listing;
+public class FilesList {    // actually a map
+    private ConcurrentHashMap<String, FilesListEntry> listing;
     public FilesList(File path) throws NoSuchAlgorithmException {
-        listing = new ArrayList<>();
+        listing = new ConcurrentHashMap<>();
         File[] files = path.listFiles();
         for(File f : files){
             if(!f.isDirectory())
                 try {
-                    listing.add(new FilesListEntry(f));
+                    FilesListEntry e = new FilesListEntry(f);
+                    add(e);
+                    listing.put(new String(e.getHash()), e);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
         }
     }
     public FilesList(){
-        listing = new ArrayList<>();
+        listing = new ConcurrentHashMap<>();
     }
     public void add(FilesListEntry e){
-        listing.add(e);
+        listing.put(new String(e.getHash()), e);
+    }
+    public ConcurrentHashMap getListing(){
+        return listing;
     }
 }

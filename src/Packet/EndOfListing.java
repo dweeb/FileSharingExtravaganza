@@ -9,7 +9,7 @@ import Header.HeaderLiterals;
  */
 
 public class EndOfListing extends Packet{
-    EndOfListing(){
+    public EndOfListing(){
         super((char)3);
         this.packet[2] = HeaderLiterals.endOfListing;
     }
