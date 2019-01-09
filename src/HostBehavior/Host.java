@@ -5,9 +5,10 @@ import Files.FilesListEntry;
 import Header.HeaderLiterals;
 import Packet.*;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class Host {
         peersFilesList = new FilesList();
         this.ownState = ownState;
     }
-    protected void connectionLoop(BufferedInputStream in, BufferedOutputStream out) throws IOException {
+    protected void connectionLoop(BufferedInputStream in, BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
         //
         //  all necessary vars initialized here
         //
@@ -35,6 +36,8 @@ public class Host {
         int leftover = 0;
         char currentPacketLength = 0;
         int currentPacketDone = 0;
+        BufferedOutputStream fileOut = null;
+        DigestOutputStream digestOut;
         //
         //  main loop
         //
@@ -86,10 +89,12 @@ public class Host {
                             break;
                         }
                         case HeaderLiterals.endOfListing : {
-                            //  show up DL menu
+                            digestOut = openDownloadMenu(out);
+                            fileOut = new BufferedOutputStream(digestOut);
                             break;
                         }
                         case HeaderLiterals.payload : {
+                            fileOut.write(completedPacket, 2, completedPacket.length - 2);
                             //  show up DL menu after DL is completed
                             break;
                         }
@@ -111,7 +116,7 @@ public class Host {
             } else leftover = 0;
         }
     }
-    void openDownloadMenu(BufferedOutputStream out) throws IOException {
+    DigestOutputStream openDownloadMenu(BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
         Map<String, FilesListEntry> filesMap = peersFilesList.getListing();
         ArrayList<FilesListEntry> filesListAsList = new ArrayList();
         StringBuilder sb = new StringBuilder();
@@ -124,15 +129,22 @@ public class Host {
         displayDownloadMenu(filesListAsString);
         Scanner s = new Scanner(System.in);
         int choice;
+        DigestOutputStream result;
         do{
             choice = s.nextInt();
         } while (choice >= filesListAsList.size());
         if(choice < 0){
+            result = null;
             out.write(new Bye().getPacket());
         } else{
+            result = new DigestOutputStream(
+                        new FileOutputStream(ownState.getDir() + File.separator + filesListAsList.get(choice).getFilename()),
+                        MessageDigest.getInstance("MD5")
+            );
             out.write(new RequestFile(filesListAsList.get(choice)).getPacket());
         }
         out.flush();
+        return result;
     }
     void displayDownloadMenu(String s){
         System.out.println(

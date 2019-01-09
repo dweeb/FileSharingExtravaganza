@@ -9,7 +9,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class OwnState {
     private FilesList fList;
+    private String dir;
     public OwnState(String dir) throws NoSuchAlgorithmException {
+        this.dir = dir;
         updateFList(dir);
     }
     void updateFList(String dir) throws NoSuchAlgorithmException {
@@ -20,5 +22,8 @@ public class OwnState {
     }
     FilesList getfList(){
         return getfList();
+    }
+    public String getDir(){
+        return dir;
     }
 }

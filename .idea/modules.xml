@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/FileDL.iml" filepath="$PROJECT_DIR$/.idea/FileDL.iml" />
       <module fileurl="file://$PROJECT_DIR$/FileServerAlpha.iml" filepath="$PROJECT_DIR$/FileServerAlpha.iml" />
     </modules>
   </component>

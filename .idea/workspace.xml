@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1cea077e-881d-44f1-85c0-97f44a169340" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/HostBehavior/OwnState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Packet/Bye.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Files/FilesList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Files/FilesList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HostBehavior/FileClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/FileClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HostBehavior/Host.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/Host.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Packet/EndOfListing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Packet/EndOfListing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Packet/RequestFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Packet/RequestFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HostBehavior/OwnState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/OwnState.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +31,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/HostBehavior/Host.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="915">
-              <caret line="132" column="63" selection-start-line="132" selection-start-column="63" selection-end-line="132" selection-end-column="63" />
+            <state relative-caret-position="510">
+              <caret line="95" column="54" selection-start-line="95" selection-start-column="54" selection-end-line="95" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -65,7 +61,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Packet/RequestFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
+            <state relative-caret-position="120">
               <caret line="9" column="51" selection-start-line="9" selection-start-column="51" selection-end-line="9" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -77,11 +73,14 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/HostBehavior/OwnState.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+            <state relative-caret-position="435">
+              <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#598#599#0" expanded="true" />
+                <element signature="e#631#632#0" expanded="true" />
+                <element signature="e#707#708#0" expanded="true" />
+                <element signature="e#732#733#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -90,16 +89,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Files/FilesList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
+            <state relative-caret-position="345">
               <caret line="34" selection-start-line="34" selection-end-line="34" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#921#922#0" expanded="true" />
-                <element signature="e#972#973#0" expanded="true" />
-                <element signature="e#923#924#0" expanded="true" />
-                <element signature="e#978#979#0" expanded="true" />
                 <element signature="e#1042#1043#0" expanded="true" />
-                <element signature="e#1071#1072#0" expanded="true" />
+                <element signature="e#1072#1073#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -147,11 +142,11 @@
         <option value="$PROJECT_DIR$/src/Packet/FileListing.java" />
         <option value="$PROJECT_DIR$/src/Packet/RequestFile.java" />
         <option value="$PROJECT_DIR$/src/HostBehavior/FileClient.java" />
-        <option value="$PROJECT_DIR$/src/HostBehavior/OwnState.java" />
         <option value="$PROJECT_DIR$/src/Files/FilesList.java" />
         <option value="$PROJECT_DIR$/src/Packet/EndOfListing.java" />
         <option value="$PROJECT_DIR$/src/Files/FilesListEntry.java" />
         <option value="$PROJECT_DIR$/src/Packet/Bye.java" />
+        <option value="$PROJECT_DIR$/src/HostBehavior/OwnState.java" />
         <option value="$PROJECT_DIR$/src/HostBehavior/Host.java" />
       </list>
     </option>
@@ -167,7 +162,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -209,10 +203,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546900742577" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546901151405" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../FileClientAlpha" />
   </component>
   <component name="RecentsManager">
@@ -282,14 +277,21 @@
       <option name="project" value="LOCAL" />
       <updated>1546817286923</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Reorganisation; main loop moved from Client to Host; reactions to most packet types added">
+      <created>1546900845249</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1546900845249</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="0" width="1280" height="1407" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1742671" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18078175" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -323,7 +325,8 @@
     <MESSAGE value="initial commit" />
     <MESSAGE value="Most packets are laid out" />
     <MESSAGE value="Client mostly finished, main loop is starting to look very reusable" />
-    <option name="LAST_COMMIT_MESSAGE" value="Client mostly finished, main loop is starting to look very reusable" />
+    <MESSAGE value="Reorganisation; main loop moved from Client to Host; reactions to most packet types added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Reorganisation; main loop moved from Client to Host; reactions to most packet types added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -408,36 +411,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="19" column="21" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Files/FilesList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#921#922#0" expanded="true" />
-            <element signature="e#972#973#0" expanded="true" />
-            <element signature="e#923#924#0" expanded="true" />
-            <element signature="e#978#979#0" expanded="true" />
-            <element signature="e#1042#1043#0" expanded="true" />
-            <element signature="e#1071#1072#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Packet/EndOfListing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Packet/ListingRequest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -455,17 +428,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/HostBehavior/OwnState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#598#599#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Files/FilesListEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="480">
@@ -476,6 +438,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="19" column="21" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Packet/Bye.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -483,9 +452,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Packet/EndOfListing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Packet/RequestFile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
+        <state relative-caret-position="120">
           <caret line="9" column="51" selection-start-line="9" selection-start-column="51" selection-end-line="9" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -493,10 +469,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Files/FilesList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1042#1043#0" expanded="true" />
+            <element signature="e#1072#1073#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HostBehavior/OwnState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#598#599#0" expanded="true" />
+            <element signature="e#631#632#0" expanded="true" />
+            <element signature="e#707#708#0" expanded="true" />
+            <element signature="e#732#733#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/HostBehavior/Host.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="915">
-          <caret line="132" column="63" selection-start-line="132" selection-start-column="63" selection-end-line="132" selection-end-column="63" />
+        <state relative-caret-position="510">
+          <caret line="95" column="54" selection-start-line="95" selection-start-column="54" selection-end-line="95" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
