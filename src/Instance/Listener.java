@@ -16,7 +16,7 @@ public class Listener {
             ServerSocket newSocket = new ServerSocket(PORT);
             //  add timeout in the future pls
         ) {
-            OwnState state = new OwnState("/home/piotr/aa");    //  @TODO later move to instance-level
+            OwnState state = new OwnState("/home/piotr/Pictures");    //  @TODO later move to instance-level
             while(!dead){
                 try{
                     Socket socket = newSocket.accept();

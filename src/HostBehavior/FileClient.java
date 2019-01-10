@@ -20,7 +20,6 @@ public class FileClient extends Host implements Runnable{
         super(ownState);
         this.server = server;
         this.port = port;
-        this.ownState = ownState;
     }
     @Override
     public void run() {
