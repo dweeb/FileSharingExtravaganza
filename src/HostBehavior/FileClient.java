@@ -10,12 +10,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class FileClient extends Host implements Runnable{
     String server;
     int port;
-    OwnState ownState;
     public FileClient(String server, int port, OwnState ownState){
         super(ownState);
         this.server = server;
@@ -39,6 +39,8 @@ public class FileClient extends Host implements Runnable{
             e.printStackTrace();
         } catch (IncorrectBehaviorException e) {
             System.err.println("Host terminated due to unknown behavior.");
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }

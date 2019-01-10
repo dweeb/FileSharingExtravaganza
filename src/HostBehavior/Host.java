@@ -19,7 +19,7 @@ public class Host {
     public static final int MAX_PACKET_SIZE = 1030; //  actual max possible size should be 1027 given the specifics of payload packet
     public static final int DATA_IN_SIZE = 1024 * 8;
     private FilesList peersFilesList;
-    private OwnState ownState;
+    protected OwnState ownState;
     protected Host(OwnState ownState){
         peersFilesList = new FilesList();
         this.ownState = ownState;
@@ -37,7 +37,9 @@ public class Host {
         char currentPacketLength = 0;
         int currentPacketDone = 0;
         BufferedOutputStream fileOut = null;
-        DigestOutputStream digestOut;
+        DigestOutputStream digestOut = null;
+        FilesListEntry currentFile = null;
+        long fileDownloadCompleted = 0;
         //
         //  main loop
         //
@@ -89,13 +91,29 @@ public class Host {
                             break;
                         }
                         case HeaderLiterals.endOfListing : {
-                            digestOut = openDownloadMenu(out);
+                            currentFile = openDownloadMenu(out);
+                            digestOut = new DigestOutputStream(
+                                    new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
+                                    MessageDigest.getInstance("MD5")
+                            );
                             fileOut = new BufferedOutputStream(digestOut);
+                            fileDownloadCompleted = 0;
                             break;
                         }
                         case HeaderLiterals.payload : {
-                            fileOut.write(completedPacket, 2, completedPacket.length - 2);
-                            //  show up DL menu after DL is completed
+                            fileOut.write(completedPacket, 3, completedPacket.length - 3);
+                            fileDownloadCompleted += completedPacket.length - 3;
+                            System.out.println(fileDownloadCompleted + " / " + currentFile.getSize());
+                            if(fileDownloadCompleted >= currentFile.getSize()){
+                                byte[] b = digestOut.getMessageDigest().digest();
+                                fileOut.close();
+                                if(b.equals(currentFile.getHash())){
+                                    System.out.println("File download completed.");
+                                } else {
+                                    System.out.println("File downloaded, MD5 hash different from expected!");
+                                }
+                                openDownloadMenu(out);
+                            }
                             break;
                         }
                         case HeaderLiterals.bye : {
@@ -116,7 +134,7 @@ public class Host {
             } else leftover = 0;
         }
     }
-    DigestOutputStream openDownloadMenu(BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
+    FilesListEntry openDownloadMenu(BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
         Map<String, FilesListEntry> filesMap = peersFilesList.getListing();
         ArrayList<FilesListEntry> filesListAsList = new ArrayList();
         StringBuilder sb = new StringBuilder();
@@ -129,7 +147,7 @@ public class Host {
         displayDownloadMenu(filesListAsString);
         Scanner s = new Scanner(System.in);
         int choice;
-        DigestOutputStream result;
+        FilesListEntry result;
         do{
             choice = s.nextInt();
         } while (choice >= filesListAsList.size());
@@ -137,10 +155,7 @@ public class Host {
             result = null;
             out.write(new Bye().getPacket());
         } else{
-            result = new DigestOutputStream(
-                        new FileOutputStream(ownState.getDir() + File.separator + filesListAsList.get(choice).getFilename()),
-                        MessageDigest.getInstance("MD5")
-            );
+            result = filesListAsList.get(choice);
             out.write(new RequestFile(filesListAsList.get(choice)).getPacket());
         }
         out.flush();
