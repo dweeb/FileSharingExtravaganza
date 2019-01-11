@@ -21,7 +21,7 @@ public class OwnState {
         fList.add(new FilesListEntry(f));
     }
     FilesList getfList(){
-        return getfList();
+        return fList;
     }
     public String getDir(){
         return dir;

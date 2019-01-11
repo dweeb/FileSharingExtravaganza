@@ -24,7 +24,7 @@ public class Host {
         peersFilesList = new FilesList();
         this.ownState = ownState;
     }
-    protected void connectionLoop(BufferedInputStream in, BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
+    protected void connectionLoop(BufferedInputStream in, BufferedOutputStream out) throws IOException, NoSuchAlgorithmException, InterruptedException {
         //
         //  all necessary vars initialized here
         //
@@ -43,7 +43,8 @@ public class Host {
         //
         //  main loop
         //
-        while((bytesRead = in.read(dataIn, leftover, DATA_IN_SIZE - leftover)) != -1){
+        while((bytesRead = in.read(dataIn, leftover, DATA_IN_SIZE - leftover) + leftover) != -1){
+            //  leftover added to bytesRead because it is added at the start of the array, effectively extending it
             int bytesProcessed = 0;
             while(bytesRead - bytesProcessed >= 3){
                 if(!inMiddleOfPacket){
@@ -60,11 +61,11 @@ public class Host {
                 } else {
                     byte[] completedPacket;
                     if(!inMiddleOfPacket){
-                        completedPacket = Arrays.copyOfRange(dataIn, bytesRead, bytesRead + currentPacketLength - 1);
+                        completedPacket = Arrays.copyOfRange(dataIn, bytesRead, bytesRead + currentPacketLength);
                     } else {
                         inMiddleOfPacket = false;
                         System.arraycopy(dataIn, bytesProcessed, temp, currentPacketDone, leftToCompleteTemp);
-                        completedPacket = Arrays.copyOfRange(temp, 0, currentPacketLength - 1);
+                        completedPacket = Arrays.copyOfRange(temp, 0, currentPacketLength);
                     }
                     bytesProcessed += leftToCompleteTemp;
                     currentPacketDone += leftToCompleteTemp;
@@ -100,6 +101,10 @@ public class Host {
                             fileDownloadCompleted = 0;
                             break;
                         }
+                        case HeaderLiterals.requestFile : {
+                            seed(new String(Arrays.copyOfRange(completedPacket, 3, completedPacket.length)), out);
+                            break;
+                        }
                         case HeaderLiterals.payload : {
                             fileOut.write(completedPacket, 3, completedPacket.length - 3);
                             fileDownloadCompleted += completedPacket.length - 3;
@@ -132,6 +137,8 @@ public class Host {
                 leftover = bytesRead - bytesProcessed;
                 System.arraycopy(dataIn, bytesRead, dataIn, 0, leftover);
             } else leftover = 0;
+            if (bytesRead < 3)
+                Thread.sleep(200);  //  if there's nothing useful added by peer, wait a bit to avoid a busy tight loop
         }
     }
     FilesListEntry openDownloadMenu(BufferedOutputStream out) throws IOException, NoSuchAlgorithmException {
@@ -169,5 +176,29 @@ public class Host {
         );
         System.out.println(s);
         System.out.print("Choose file to download,\n(or a negative value to end connection): ");
+    }
+    void seed(String key, BufferedOutputStream out) throws IOException {
+        FilesListEntry file = (FilesListEntry) ownState.getfList().getListing().get(key);
+        if(file != null){
+            try {
+                BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream( new File(
+                        "" + ownState.getDir() + File.separator + file.getFilename()))); //lisp lookalike
+                byte sendOut[] = new byte[MAX_PACKET_SIZE];
+                int fileRead;
+                while((fileRead = fileIn.read(sendOut, 3, 1024)) != -1){
+                    out.write(new Payload(Arrays.copyOfRange(sendOut, 0, fileRead+3)).getPacket());
+                }   //  for the longest time I thought Arrays.copyOfRange() creates an array that points at the existing part
+                    //  of the source array, and doesn't actually copy the *values* - too late to turn back now
+            } catch (FileNotFoundException e) {
+                out.write(new Unavailable().getPacket());
+                System.err.println("Requested file was not found");
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            out.write(new Unavailable().getPacket());
+        }
+        out.flush();
     }
 }

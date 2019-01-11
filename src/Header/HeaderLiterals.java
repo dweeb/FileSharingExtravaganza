@@ -7,4 +7,5 @@ public class HeaderLiterals {
     public static final byte endOfListing   = (byte) 'E';
     public static final byte requestFile    = (byte) 'R';
     public static final byte payload        = (byte) 'P';
+    public static final byte unavailable    = (byte) 'U';
 }

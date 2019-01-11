@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FilesList {    // actually a map
     private ConcurrentHashMap<String, FilesListEntry> listing;
     public FilesList(File path) throws NoSuchAlgorithmException {
-        listing = new ConcurrentHashMap<>();
+        listing = new ConcurrentHashMap<String, FilesListEntry>();
         File[] files = path.listFiles();
         for(File f : files){
             if(!f.isDirectory())
@@ -24,7 +24,7 @@ public class FilesList {    // actually a map
         }
     }
     public FilesList(){
-        listing = new ConcurrentHashMap<>();
+        listing = new ConcurrentHashMap<String, FilesListEntry>();
     }
     public void add(FilesListEntry e){
         listing.put(new String(e.getHash()), e);
