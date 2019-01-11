@@ -1,17 +1,15 @@
 package HostBehavior;
 
-import Files.FilesList;
 import Header.HeaderLiterals;
+import Instance.OwnState;
 import Packet.Handshake;
 import Packet.ListingRequest;
-import Packet.Packet;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 public class FileClient extends Host implements Runnable{
     String server;
@@ -23,6 +21,7 @@ public class FileClient extends Host implements Runnable{
     }
     @Override
     public void run() {
+        System.out.println(server + port);
         try(
             Socket socket = new Socket(server, port);
             BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
@@ -35,6 +34,7 @@ public class FileClient extends Host implements Runnable{
             connectionLoop(in, out);
         }
         catch (IOException e) {
+            System.err.println("Peer has closed the connection.");
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -42,17 +42,9 @@ public class FileClient extends Host implements Runnable{
             System.err.println("Host terminated due to unknown behavior.");
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
+            //  should not happen; MD5 is guaranteed in all implementations
             e.printStackTrace();
         }
     }
     //
-    private boolean handshake(BufferedOutputStream out, BufferedInputStream in) throws IOException, InterruptedException {
-        out.write(new Handshake().getPacket());
-        out.flush();
-        byte[] b = new byte[3];
-        int read = 0;
-        while((read += in.read(b, read, 3-read)) != 3){Thread.sleep(10);}
-        if(new Handshake(b).getNumberOfBytes() == 3 && b[2] == HeaderLiterals.handshake) return true;
-        return false;
-    }
 }

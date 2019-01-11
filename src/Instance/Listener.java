@@ -1,12 +1,11 @@
 package Instance;
 
 import HostBehavior.FileSeeder;
-import HostBehavior.OwnState;
+import Instance.OwnState;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 
 public class Listener implements Runnable{
     public static final int PORT = 61337;       //  @TODO: change to configurable
@@ -21,6 +20,7 @@ public class Listener implements Runnable{
             //  add timeout in the future pls
         ) {
             //OwnState state = new OwnState("/home/piotr/Pictures");    //  @TODO later move to instance-level
+            System.out.println("test01");
             while(!dead){
                 try{
                     Socket socket = newSocket.accept();

@@ -1,5 +1,7 @@
 package HostBehavior;
 
+import Instance.OwnState;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;

@@ -3,16 +3,14 @@ package HostBehavior;
 import Files.FilesList;
 import Files.FilesListEntry;
 import Header.HeaderLiterals;
+import Instance.OwnState;
 import Packet.*;
 
 import java.io.*;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Host {
     public static final int MAX_PACKET_SIZE = 1024 + 3;//1030; //  actual max possible size should be 1027 given the specifics of payload packet
@@ -73,12 +71,11 @@ public class Host {
                     //  op on completed packet
                     byte flag = completedPacket[2];
                     switch (flag){
-                        case HeaderLiterals.handshake : {
+                        case HeaderLiterals.handshake :
                             out.write(new Handshake().getPacket(), 0, 3);
                             out.flush();
                             break;
-                        }
-                        case HeaderLiterals.listingRequest : {
+                        case HeaderLiterals.listingRequest :
                             Map<String, FilesListEntry> filesMap = ownState.getfList().getListing();
                             for(String k : filesMap.keySet()){
                                 out.write(new FileListing(filesMap.get(k)).getPacket());
@@ -86,30 +83,23 @@ public class Host {
                             out.write(new EndOfListing().getPacket());
                             out.flush();
                             break;
-                        }
-                        case HeaderLiterals.fileListing : {
+                        case HeaderLiterals.fileListing :
                             peersFilesList.add(new FilesListEntry(new FileListing(completedPacket)));
                             break;
-                        }
-                        case HeaderLiterals.endOfListing : {
+                        case HeaderLiterals.endOfListing :
                             currentFile = openDownloadMenu(out);
-                            try{
+                            if(currentFile != null)
                                 digestOut = new DigestOutputStream(
                                         new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
                                         MessageDigest.getInstance("MD5")
                                 );
-                            }catch (NullPointerException e){
-                                //  this is intentional. null is returned by previous method if the option to close connection is chosen
-                            }
                             fileOut = new BufferedOutputStream(digestOut);
                             fileDownloadCompleted = 0;
                             break;
-                        }
-                        case HeaderLiterals.requestFile : {
-                            seed(new String(Arrays.copyOfRange(completedPacket, 3, completedPacket.length)), out);
+                        case HeaderLiterals.requestFile :
+                            seed(new String(Arrays.copyOfRange(completedPacket, 3, 19)), out);
                             break;
-                        }
-                        case HeaderLiterals.payload : {
+                        case HeaderLiterals.payload :
                             fileOut.write(completedPacket, 3, completedPacket.length - 3);
                             fileDownloadCompleted = fileDownloadCompleted + (completedPacket.length - 3);
                             System.out.println(fileDownloadCompleted + " / " + currentFile.getSize());
@@ -122,29 +112,24 @@ public class Host {
                                 } else {
                                     System.out.println("File downloaded, MD5 hash different from expected!");
                                 }
+                                //
                                 currentFile = openDownloadMenu(out);
-                                try {
+                                if(currentFile != null)
                                     digestOut = new DigestOutputStream(
                                             new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
                                             MessageDigest.getInstance("MD5")
                                     );
-                                }catch (NullPointerException e){
-                                    //  this is intentional. null is returned by previous method if the option to close connection is chosen
-                                }
                                 fileOut = new BufferedOutputStream(digestOut);
                                 fileDownloadCompleted = 0;
                             }
                             break;
-                        }
-                        case HeaderLiterals.bye : {
+                        case HeaderLiterals.bye :
                             out.close();
                             in.close();
                             break;
-                        }
-                        default : {
+                        default :
                             System.err.println("This was unexpected");
                             break;
-                        }
                     }
                 }
             }
@@ -160,24 +145,36 @@ public class Host {
         Map<String, FilesListEntry> filesMap = peersFilesList.getListing();
         ArrayList<FilesListEntry> filesListAsList = new ArrayList();
         StringBuilder sb = new StringBuilder();
+        boolean fileAlreadyExists;
         int i = 0;
         for(String k : filesMap.keySet()){
             filesListAsList.add(filesMap.get(k));
             sb.append("" + (i++) + "\t:  " + filesMap.get(k).getFilename() + '\n');
         }
         String filesListAsString = new String(sb);
-        displayDownloadMenu(filesListAsString);
-        Scanner s = new Scanner(System.in);
         int choice;
         FilesListEntry result;
-        do{
-            choice = s.nextInt();
-        } while (choice >= filesListAsList.size());
+        Scanner s = new Scanner(System.in);
+        do {
+            displayDownloadMenu(filesListAsString);
+            do {
+                choice = s.nextInt();
+            } while (choice >= filesListAsList.size());
+            if (choice < 0) {
+                result = null;
+                fileAlreadyExists = false;
+            } else {
+                result = filesListAsList.get(choice);
+                if (ownState.getfList().getListing().get(new String(result.getMD5Hash())) != null) {
+                    fileAlreadyExists = true;
+                    System.out.println("Requested file already exists in the downloads directory.");
+                } else
+                    fileAlreadyExists = false;
+            }
+        } while (fileAlreadyExists);
         if(choice < 0){
-            result = null;
             out.write(new Bye().getPacket());
         } else{
-            result = filesListAsList.get(choice);
             out.write(new RequestFile(filesListAsList.get(choice)).getPacket());
         }
         out.flush();
@@ -194,6 +191,7 @@ public class Host {
     }
     void seed(String key, BufferedOutputStream out) throws IOException {
         FilesListEntry file = (FilesListEntry) ownState.getfList().getListing().get(key);
+        System.out.println(ownState.getDir());
         if(file != null){
             try (
                 BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream( new File(
@@ -216,5 +214,14 @@ public class Host {
             out.write(new Unavailable().getPacket());
         }
         out.flush();
+    }
+    protected boolean handshake(BufferedOutputStream out, BufferedInputStream in) throws IOException, InterruptedException {
+        out.write(new Handshake().getPacket());
+        out.flush();
+        byte[] b = new byte[3];
+        int read = 0;
+        while((read += in.read(b, read, 3-read)) != 3){Thread.sleep(10);}
+        if(new Handshake(b).getNumberOfBytes() == 3 && b[2] == HeaderLiterals.handshake) return true;
+        return false;
     }
 }

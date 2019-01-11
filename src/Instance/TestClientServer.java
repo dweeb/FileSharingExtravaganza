@@ -1,12 +1,12 @@
 package Instance;
 
 import HostBehavior.FileClient;
-import HostBehavior.OwnState;
+import Instance.OwnState;
 
 import java.security.NoSuchAlgorithmException;
 
 public class TestClientServer {
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, InterruptedException {
         //
         OwnState serverState = new OwnState("/home/piotr/Pictures");
         OwnState clientState = new OwnState("/home/piotr/FileSharingTest");

@@ -28,19 +28,4 @@ public class FileListing extends Packet{
         System.arraycopy(hash, 0, packet, 3+size.length, hash.length);
         System.arraycopy(name, 0, packet, 3+size.length+hash.length, name.length);
     }
-    private byte[] longToByteArr(long l){
-        int arrSize = Long.SIZE / Byte.SIZE;
-        byte[] result = new byte[arrSize];
-        for(int i=0; i<arrSize; i++){
-            result[i] = (byte)((l>>(i*8)) & 0xFF);
-        }
-        return result;
-    }
-    public long byteArrToLong(byte[] b){
-        long result = 0;
-        for(int i=0; i<b.length; i++){
-            result |= (b[i] & 0xFFl) << (i*8);
-        }
-        return result;
-    }
 }

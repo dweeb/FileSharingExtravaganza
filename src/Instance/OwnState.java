@@ -1,4 +1,4 @@
-package HostBehavior;
+package Instance;
 
 import Files.FilesList;
 import Files.FilesListEntry;
@@ -14,13 +14,13 @@ public class OwnState {
         this.dir = dir;
         updateFList(dir);
     }
-    void updateFList(String dir) throws NoSuchAlgorithmException {
+    public void updateFList(String dir) throws NoSuchAlgorithmException {
         fList = new FilesList(new File(dir));
     }
-    void addDownloadedFile(File f) throws IOException, NoSuchAlgorithmException {
+    public void addDownloadedFile(File f) throws IOException, NoSuchAlgorithmException {
         fList.add(new FilesListEntry(f));
     }
-    FilesList getfList(){
+    public FilesList getfList(){
         return fList;
     }
     public String getDir(){
