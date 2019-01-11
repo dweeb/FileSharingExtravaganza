@@ -13,10 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Host {
-    public static final int MAX_PACKET_SIZE = 1030; //  actual max possible size should be 1027 given the specifics of payload packet
+    public static final int MAX_PACKET_SIZE = 1024 + 3;//1030; //  actual max possible size should be 1027 given the specifics of payload packet
     public static final int DATA_IN_SIZE = 1024 * 8;
     private FilesList peersFilesList;
     protected OwnState ownState;
@@ -40,6 +39,7 @@ public class Host {
         DigestOutputStream digestOut = null;
         FilesListEntry currentFile = null;
         long fileDownloadCompleted = 0;
+        Packet p = new Packet(null);
         //
         //  main loop
         //
@@ -48,7 +48,7 @@ public class Host {
             int bytesProcessed = 0;
             while(bytesRead - bytesProcessed >= 3){
                 if(!inMiddleOfPacket){
-                    currentPacketLength = Packet.getNumberOfBytes(dataIn[bytesProcessed], dataIn[bytesProcessed+1]);
+                    currentPacketLength = p.getNumberOfBytes(dataIn[bytesProcessed], dataIn[bytesProcessed+1]);
                     currentPacketDone = 0;
                 }
                 int leftInDataIn = bytesRead - bytesProcessed;
@@ -57,11 +57,11 @@ public class Host {
                     inMiddleOfPacket = true;
                     System.arraycopy(dataIn, bytesProcessed, temp, currentPacketDone, leftInDataIn);
                     currentPacketDone += leftInDataIn;
-                    bytesProcessed = leftInDataIn;
+                    bytesProcessed += leftInDataIn;  //  number of hours spent finding that there should be "+=" instead of "=" : 2
                 } else {
                     byte[] completedPacket;
                     if(!inMiddleOfPacket){
-                        completedPacket = Arrays.copyOfRange(dataIn, bytesRead, bytesRead + currentPacketLength);
+                        completedPacket = Arrays.copyOfRange(dataIn, bytesProcessed, bytesProcessed + currentPacketLength);
                     } else {
                         inMiddleOfPacket = false;
                         System.arraycopy(dataIn, bytesProcessed, temp, currentPacketDone, leftToCompleteTemp);
@@ -93,10 +93,14 @@ public class Host {
                         }
                         case HeaderLiterals.endOfListing : {
                             currentFile = openDownloadMenu(out);
-                            digestOut = new DigestOutputStream(
-                                    new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
-                                    MessageDigest.getInstance("MD5")
-                            );
+                            try{
+                                digestOut = new DigestOutputStream(
+                                        new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
+                                        MessageDigest.getInstance("MD5")
+                                );
+                            }catch (NullPointerException e){
+                                //  this is intentional. null is returned by previous method if the option to close connection is chosen
+                            }
                             fileOut = new BufferedOutputStream(digestOut);
                             fileDownloadCompleted = 0;
                             break;
@@ -107,17 +111,28 @@ public class Host {
                         }
                         case HeaderLiterals.payload : {
                             fileOut.write(completedPacket, 3, completedPacket.length - 3);
-                            fileDownloadCompleted += completedPacket.length - 3;
+                            fileDownloadCompleted = fileDownloadCompleted + (completedPacket.length - 3);
                             System.out.println(fileDownloadCompleted + " / " + currentFile.getSize());
                             if(fileDownloadCompleted >= currentFile.getSize()){
+                                fileOut.flush();
                                 byte[] b = digestOut.getMessageDigest().digest();
                                 fileOut.close();
-                                if(b.equals(currentFile.getHash())){
-                                    System.out.println("File download completed.");
+                                if(Arrays.equals(b, currentFile.getMD5Hash())){
+                                    System.out.println("File download completed. MD5 checksum in order");
                                 } else {
                                     System.out.println("File downloaded, MD5 hash different from expected!");
                                 }
-                                openDownloadMenu(out);
+                                currentFile = openDownloadMenu(out);
+                                try {
+                                    digestOut = new DigestOutputStream(
+                                            new FileOutputStream(ownState.getDir() + File.separator + currentFile.getFilename()),
+                                            MessageDigest.getInstance("MD5")
+                                    );
+                                }catch (NullPointerException e){
+                                    //  this is intentional. null is returned by previous method if the option to close connection is chosen
+                                }
+                                fileOut = new BufferedOutputStream(digestOut);
+                                fileDownloadCompleted = 0;
                             }
                             break;
                         }
@@ -180,13 +195,14 @@ public class Host {
     void seed(String key, BufferedOutputStream out) throws IOException {
         FilesListEntry file = (FilesListEntry) ownState.getfList().getListing().get(key);
         if(file != null){
-            try {
+            try (
                 BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream( new File(
                         "" + ownState.getDir() + File.separator + file.getFilename()))); //lisp lookalike
+            ) {
                 byte sendOut[] = new byte[MAX_PACKET_SIZE];
                 int fileRead;
-                while((fileRead = fileIn.read(sendOut, 3, 1024)) != -1){
-                    out.write(new Payload(Arrays.copyOfRange(sendOut, 0, fileRead+3)).getPacket());
+                while((fileRead = fileIn.read(sendOut, 0, 1024)) != -1){
+                    out.write(new Payload(Arrays.copyOfRange(sendOut, 0, fileRead)).getPacket());
                 }   //  for the longest time I thought Arrays.copyOfRange() creates an array that points at the existing part
                     //  of the source array, and doesn't actually copy the *values* - too late to turn back now
             } catch (FileNotFoundException e) {

@@ -1,10 +1,7 @@
 package Files;
 
 import java.io.*;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FilesList {    // actually a map
@@ -17,7 +14,7 @@ public class FilesList {    // actually a map
                 try {
                     FilesListEntry e = new FilesListEntry(f);
                     add(e);
-                    listing.put(new String(e.getHash()), e);
+                    listing.put(new String(e.getMD5Hash()), e);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -27,7 +24,7 @@ public class FilesList {    // actually a map
         listing = new ConcurrentHashMap<String, FilesListEntry>();
     }
     public void add(FilesListEntry e){
-        listing.put(new String(e.getHash()), e);
+        listing.put(new String(e.getMD5Hash()), e);
     }
     public ConcurrentHashMap getListing(){
         return listing;

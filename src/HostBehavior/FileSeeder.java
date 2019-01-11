@@ -20,8 +20,10 @@ public class FileSeeder extends Host implements Runnable{
         ) {
             connectionLoop(in, out);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("The connection was probably closed, nothing to see here.");
         } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -30,6 +30,8 @@ public class FileClient extends Host implements Runnable{
             //
         ){
             if(!handshake(out, in)){throw new IncorrectBehaviorException();};
+            out.write(new ListingRequest().getPacket());
+            out.flush();
             connectionLoop(in, out);
         }
         catch (IOException e) {
@@ -45,7 +47,7 @@ public class FileClient extends Host implements Runnable{
     }
     //
     private boolean handshake(BufferedOutputStream out, BufferedInputStream in) throws IOException, InterruptedException {
-        out.write(new Handshake().getPacket(), 0, 3);
+        out.write(new Handshake().getPacket());
         out.flush();
         byte[] b = new byte[3];
         int read = 0;

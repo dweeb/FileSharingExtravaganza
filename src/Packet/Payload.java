@@ -13,9 +13,8 @@ import java.util.Arrays;
 
 public class Payload extends Packet{
     public Payload(byte[] payload){
-        super((char)(payload.length));
+        super((char)(payload.length+3));
         packet[2] = HeaderLiterals.payload;
-        //System.arraycopy(payload, 0, packet, 3, payload.length);
-        //  line above is commented out as the payload is prepared beforehand in indices 3..end
+        System.arraycopy(payload, 0, packet, 3, payload.length);
     }
 }

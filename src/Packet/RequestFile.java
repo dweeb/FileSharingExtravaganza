@@ -12,8 +12,8 @@ import Header.HeaderLiterals;
 
 public class RequestFile extends Packet{
     public RequestFile(FilesListEntry f){
-        super((char)(3 + f.getHash().length));
-        byte[] hash = f.getHash();
+        super((char)(3 + f.getMD5Hash().length));
+        byte[] hash = f.getMD5Hash();
         packet[2] = HeaderLiterals.requestFile;
         System.arraycopy(hash, 0, packet, 3, hash.length);
     }

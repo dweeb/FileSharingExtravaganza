@@ -24,7 +24,7 @@ public class Packet {
                         (char)((char)packet[1] << 8)    //  t. spent half an hour getting this right
         );
     }
-    public static char getNumberOfBytes(byte b0, byte b1){
+    public char getNumberOfBytes(byte b0, byte b1){
         return (char)(
                 (b0 & 0xFF) | (char)((char)b1 << 8)     //  copy of the above for before a packet is extracted from data
         );
