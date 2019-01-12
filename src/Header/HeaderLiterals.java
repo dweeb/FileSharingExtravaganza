@@ -8,6 +8,4 @@ public class HeaderLiterals {
     public static final byte requestFile        = (byte) 'R';
     public static final byte payload            = (byte) 'P';
     public static final byte unavailable        = (byte) 'U';
-    public static final byte peersListRequest   = (byte) 'T';
-    public static final byte peersList          = (byte) 'V';
 }
