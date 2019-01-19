@@ -32,12 +32,24 @@ public class FilesList {    // actually a map
                     throw new FileOperationException();
                 }
         }
+        System.out.println(tempFiles.size() + "   " + tempMetas.size());
+        tempFilesList = new ArrayList<>();
+        for(File tf : tempFiles){
+            String metaName = tf.getName() + "meta";
+            for(File mf : tempMetas){
+                if(metaName.equals(mf.getName())){
+                    tempFilesList.add(new TempFilesEntry(tf, mf));
+                }
+            }
+        }
+        /*
         for(File f : tempFiles){
             int i=0;
             while(i<tempMetas.size() && !tempMetas.get(i).getName().startsWith(f.getName())){ i++; }
             tempFilesList.add(new TempFilesEntry(f, tempMetas.get(i)));
             tempMetas.remove(i);
         }
+        */
     }
     public FilesList(){
         listing = new ConcurrentHashMap<String, FilesListEntry>();

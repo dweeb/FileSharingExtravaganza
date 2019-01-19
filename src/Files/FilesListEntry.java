@@ -1,6 +1,7 @@
 package Files;
 
 import Packet.FileListing;
+import Packet.Packet;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -25,11 +26,15 @@ public class FilesListEntry {
         filename = f.getName();
     }
     public FilesListEntry(FileListing packet){
-        size = packet.byteArrToLong(Arrays.copyOfRange(packet.getPacket(), 3, 11));
+        size = Packet.byteArrToLong(Arrays.copyOfRange(packet.getPacket(), 3, 11));
         hash = new byte[16];
         System.arraycopy(packet.getPacket(), 11, hash, 0, 16);
         filename = new String(Arrays.copyOfRange(packet.getPacket(), 27, packet.getPacket().length));
     }
+
+    FilesListEntry() {
+    }
+
     public byte[] getMD5Hash() {
         return hash;
     }

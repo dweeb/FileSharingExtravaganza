@@ -8,6 +8,7 @@ import Instance.OwnState;
 import Packet.*;
 
 import java.io.*;
+import java.security.DigestInputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -94,7 +95,8 @@ public class Host {
                     Thread.sleep(200);  //  if there's nothing useful added by peer, wait a bit to avoid a busy tight loop
             }
         }catch (IOException e){
-            fileOut.close();
+            if (fileOut != null)
+                fileOut.close();
             throw new IOException();
         }
     }
@@ -146,7 +148,9 @@ public class Host {
         System.out.println(s);
         System.out.print("Choose file to download,\n(or a negative value to end connection): ");
     }
-    private void seed(String key, BufferedOutputStream out) throws IOException {
+    private void seed(byte[] packet, BufferedOutputStream out) throws IOException {
+        String key = new String(Arrays.copyOfRange(packet, 3, 19));
+        long startAt = Packet.byteArrToLong(Arrays.copyOfRange(packet, 19, packet.length));
         FilesListEntry file = (FilesListEntry) ownState.getfList().getListing().get(key);
         System.out.println(ownState.getDir());
         if(file != null){
@@ -154,6 +158,8 @@ public class Host {
                 BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream( new File(
                         "" + ownState.getDir() + File.separator + file.getFilename()))); //lisp lookalike
             ) {
+                if(startAt > 0) fileIn.skip(startAt);
+                System.out.println("Debug:" + startAt + " AA " + file.getSize());
                 byte sendOut[] = new byte[MAX_PACKET_SIZE];
                 int fileRead;
                 while((fileRead = fileIn.read(sendOut, 0, 1024)) != -1){
@@ -200,7 +206,7 @@ public class Host {
                     chooseNextFileToDownload(out);
                     break;
                 case HeaderLiterals.requestFile:
-                    seed(new String(Arrays.copyOfRange(completedPacket, 3, 19)), out);
+                    seed(completedPacket, out);
                     break;
                 case HeaderLiterals.payload:
                     servicePayload(out, completedPacket);
@@ -230,23 +236,50 @@ public class Host {
         out.flush();
     }
     private void chooseNextFileToDownload(BufferedOutputStream out) throws IOException, NoSuchAlgorithmException, FileOperationException {
-        currentFile = openDownloadMenu(out);
-        if(currentFile != null)
+        int continued = checkForTempFile();
+        if(continued < 0) {
+            currentFile = openDownloadMenu(out);
+            if (currentFile != null)
+                try {
+                    Random r = new Random();
+                    int tempNumber = r.nextInt();
+                    tempFile = new File(ownState.getDir() + File.separator + ".temp_" + tempNumber);
+                    tempMeta = new File(ownState.getDir() + File.separator + ".temp_" + tempNumber + "meta");
+                    createTempMeta(tempMeta);
+                    digestOut = new DigestOutputStream(
+                            new FileOutputStream(tempFile),
+                            MessageDigest.getInstance("MD5")
+                    );
+                    fileOut = new BufferedOutputStream(digestOut);
+                } catch (IOException e) {
+                    throw new FileOperationException();
+                }
+            fileDownloadCompleted = 0;
+        } else {
+            TempFilesEntry currentContinued = ownState.getfList().getTempFilesList().get(continued);
             try {
-                Random r = new Random();
-                int tempNumber = r.nextInt();
-                tempFile = new File(ownState.getDir() + File.separator + ".temp_" + tempNumber);
-                tempMeta = new File(ownState.getDir() + File.separator + ".temp_" +tempNumber + "meta");
-                createTempMeta(tempMeta);
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                BufferedInputStream bis = new BufferedInputStream(new DigestInputStream(new FileInputStream(currentContinued.getFile()), md));
+                byte b[] = new byte[1024];
+                while(bis.read(b) != -1){}
+                bis.close();
+                tempFile = currentContinued.getFile();
+                tempMeta = currentContinued.getMetaFile();
                 digestOut = new DigestOutputStream(
-                        new FileOutputStream(tempFile),
-                        MessageDigest.getInstance("MD5")
+                        new FileOutputStream(tempFile, true),
+                        md
                 );
                 fileOut = new BufferedOutputStream(digestOut);
+                currentFile = currentContinued;
+                ownState.getfList().getTempFilesList().remove(currentContinued);
             } catch (IOException e){
                 throw new FileOperationException();
             }
-        fileDownloadCompleted = 0;
+            out.write(new RequestFile(currentContinued).getPacket());
+            out.flush();
+            fileDownloadCompleted = currentContinued.getCurrentSize();
+            System.out.println("Debug:file chosen");
+        }
 
     }
     private void servicePayload(BufferedOutputStream out, byte[] completedPacket) throws NoSuchAlgorithmException, FileOperationException, IOException {
@@ -289,14 +322,12 @@ public class Host {
         file.renameTo(new File(new String(newName)));
     }
     private void createTempMeta(File tempMeta) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempMeta));
-        writer.write(new String(currentFile.getMD5Hash()));
-        writer.newLine();
-        writer.write("" + currentFile.getSize());
-        writer.newLine();
-        writer.write(currentFile.getFilename());
-        writer.flush();
-        writer.close();
+        BufferedOutputStream tempOut = new BufferedOutputStream(new FileOutputStream(tempMeta));
+        tempOut.write(currentFile.getMD5Hash());
+        tempOut.write(Packet.longToByteArr(currentFile.getSize()));
+        tempOut.write(currentFile.getFilename().getBytes());
+        tempOut.flush();
+        tempOut.close();
     }
     private int checkForTempFile() throws FileNotFoundException {
         ArrayList<TempFilesEntry> tempsList = ownState.getfList().getTempFilesList();

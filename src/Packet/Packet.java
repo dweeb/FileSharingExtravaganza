@@ -30,7 +30,7 @@ public class Packet {
         );
     }
     public byte[] getPacket(){ return packet;}
-    protected byte[] longToByteArr(long l){
+    public static byte[] longToByteArr(long l){
         int arrSize = Long.SIZE / Byte.SIZE;
         byte[] result = new byte[arrSize];
         for(int i=0; i<arrSize; i++){
@@ -38,7 +38,7 @@ public class Packet {
         }
         return result;
     }
-    public long byteArrToLong(byte[] b){
+    public static long byteArrToLong(byte[] b){
         long result = 0;
         for(int i=0; i<b.length; i++){
             result |= (b[i] & 0xFFl) << (i*8);

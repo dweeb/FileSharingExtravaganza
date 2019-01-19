@@ -1,6 +1,7 @@
 package Packet;
 
 import Files.FilesListEntry;
+import Files.TempFilesEntry;
 import Header.HeaderLiterals;
 
 /**
@@ -21,5 +22,12 @@ public class RequestFile extends Packet{
     public RequestFile(FilesListEntry f, long startAt){
         this(f);
         System.arraycopy(longToByteArr(startAt), 0, packet, 19, 8);
+    }
+    public RequestFile(TempFilesEntry f){
+        super((char)(3+f.getMD5Hash().length + 8));
+        byte[] hash = f.getMD5Hash();
+        packet[2] = HeaderLiterals.requestFile;
+        System.arraycopy(hash, 0, packet, 3, hash.length);
+        System.arraycopy(longToByteArr(f.getCurrentSize()), 0, packet, 19, 8);
     }
 }
