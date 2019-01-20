@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="FileSharingExtravaganza:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1cea077e-881d-44f1-85c0-97f44a169340" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Instance/SingleHostListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HostBehavior/FileClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/FileClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HostBehavior/Host.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/Host.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HostBehavior/FileSeeder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HostBehavior/FileSeeder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Instance/Instance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Instance/Instance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Instance/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Instance/Listener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Instance/Mode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Instance/Mode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Instance/TestClientServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Instance/TestClientServer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Instance/Instance.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="80" column="71" selection-start-line="80" selection-start-column="71" selection-end-line="80" selection-end-column="71" />
+            <state relative-caret-position="217">
+              <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -48,7 +49,7 @@
         <entry file="file://$PROJECT_DIR$/src/Instance/Mode.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
             </state>
           </provider>
         </entry>
@@ -91,11 +92,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="23" selection-start-line="23" selection-end-line="23" />
+            <state relative-caret-position="202">
+              <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -103,8 +104,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileSeeder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+            <state relative-caret-position="360">
+              <caret line="24" column="68" selection-start-line="24" selection-start-column="68" selection-end-line="24" selection-end-column="68" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -180,7 +184,6 @@
         <option value="$PROJECT_DIR$/src/Packet/Handshake.java" />
         <option value="$PROJECT_DIR$/src/Packet/Unavailable.java" />
         <option value="$PROJECT_DIR$/src/Packet/Payload.java" />
-        <option value="$PROJECT_DIR$/src/HostBehavior/FileSeeder.java" />
         <option value="$PROJECT_DIR$/src/Packet/FileListing.java" />
         <option value="$PROJECT_DIR$/src/HostBehavior/OwnState.java" />
         <option value="$PROJECT_DIR$/src/Packet/PeersRequest.java" />
@@ -200,11 +203,12 @@
         <option value="$PROJECT_DIR$/src/Files/TempFilesEntry.java" />
         <option value="$PROJECT_DIR$/src/Instance/Listener.java" />
         <option value="$PROJECT_DIR$/src/Instance/TestClientServer.java" />
-        <option value="$PROJECT_DIR$/src/HostBehavior/FileClient.java" />
         <option value="$PROJECT_DIR$/src/HostBehavior/Host.java" />
         <option value="$PROJECT_DIR$/src/Instance/Mode.java" />
         <option value="$PROJECT_DIR$/src/Instance/SingleHostListener.java" />
+        <option value="$PROJECT_DIR$/src/HostBehavior/FileSeeder.java" />
         <option value="$PROJECT_DIR$/src/Instance/Instance.java" />
+        <option value="$PROJECT_DIR$/src/HostBehavior/FileClient.java" />
       </list>
     </option>
   </component>
@@ -258,10 +262,10 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547986582923" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547993003329" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
@@ -289,10 +293,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestClientServer">
+  <component name="RunManager" selected="Application.Instance">
     <configuration name="ArrTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ArrTest" />
       <module name="FileServerAlpha" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Instance" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Instance.Instance" />
+      <module name="FileSharingExtravaganza" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Instance.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -321,6 +338,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Instance" />
         <item itemvalue="Application.TestClientServer" />
         <item itemvalue="Application.ArrTest" />
         <item itemvalue="Application.Listener" />
@@ -415,14 +433,21 @@
       <option name="project" value="LOCAL" />
       <updated>1547984895693</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="now to create batch scripts">
+      <created>1547991251324</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1547991251324</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-3" y="0" width="1606" height="870" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11518662" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11518662" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -535,7 +560,8 @@
     <MESSAGE value="Fucked it, then kind of unfucked it. commit before reo" />
     <MESSAGE value="slowly adding the capability to resume a download" />
     <MESSAGE value="ready to pack into instances and submit" />
-    <option name="LAST_COMMIT_MESSAGE" value="ready to pack into instances and submit" />
+    <MESSAGE value="now to create batch scripts" />
+    <option name="LAST_COMMIT_MESSAGE" value="now to create batch scripts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -715,20 +741,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileSeeder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/HostBehavior/Host.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="397">
@@ -752,7 +764,7 @@
     <entry file="file://$PROJECT_DIR$/src/Instance/Mode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
@@ -778,13 +790,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Instance/Instance.java">
+    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileSeeder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="80" column="71" selection-start-line="80" selection-start-column="71" selection-end-line="80" selection-end-column="71" />
+        <state relative-caret-position="360">
+          <caret line="24" column="68" selection-start-line="24" selection-start-column="68" selection-end-line="24" selection-end-column="68" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Instance/Instance.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HostBehavior/FileClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -794,10 +823,12 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>FileSharingExtravaganza:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>

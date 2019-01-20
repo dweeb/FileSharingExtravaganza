@@ -8,6 +8,7 @@ import Packet.ListingRequest;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 
@@ -32,14 +33,15 @@ public class FileClient extends Host implements Runnable{
             out.flush();
             connectionLoop(in, out);
         }
-        catch (IOException e) {
+        catch (ConnectException e){
+            System.err.println("Unable to connect to server.");
+        } catch (IOException e) {
             System.err.println("Peer has closed the connection.");
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IncorrectBehaviorException e) {
             System.err.println("Host terminated due to unknown behavior.");
-            e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             //  should not happen; MD5 is guaranteed in all implementations
             e.printStackTrace();

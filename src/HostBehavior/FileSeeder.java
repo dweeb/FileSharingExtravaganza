@@ -22,7 +22,7 @@ public class FileSeeder extends Host implements Runnable{
         ) {
             connectionLoop(in, out);
         } catch (IOException e) {
-            System.out.println("The connection was probably closed, nothing to see here.");
+            System.out.println("Connection with client was terminated.");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
