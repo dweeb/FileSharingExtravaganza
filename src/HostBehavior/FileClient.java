@@ -21,7 +21,6 @@ public class FileClient extends Host implements Runnable{
     }
     @Override
     public void run() {
-        System.out.println(server + port);
         try(
             Socket socket = new Socket(server, port);
             BufferedInputStream in = new BufferedInputStream(socket.getInputStream());

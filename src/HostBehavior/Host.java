@@ -169,7 +169,6 @@ public class Host {
                         BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(fileToSeed)); //lisp lookalike
                 ) {
                     if (startAt > 0) fileIn.skip(startAt);
-                    System.out.println("Debug:" + startAt + " AA " + file.getSize());
                     byte sendOut[] = new byte[MAX_PACKET_SIZE];
                     int fileRead;
                     while ((fileRead = fileIn.read(sendOut, 0, 1024)) != -1) {

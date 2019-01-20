@@ -3,5 +3,6 @@ package Instance;
 public enum Mode {
     SINGLE_CLIENT,
     SINGLE_SERVER,
-    PEER
+    CLIENT_ONLY,
+    SERVER_ONLY
 }

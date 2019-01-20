@@ -8,26 +8,27 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Listener implements Runnable{
-    public static final int PORT = 61337;       //  @TODO: change to configurable
     private OwnState state;
-    public Listener(OwnState state){
+    private int port;
+    private ServerSocket serverSocket;
+    public Listener(OwnState state, int port){
         this.state = state;
+        this.port = port;
     }
     public void run(){
         boolean dead = false;
         try(
-            ServerSocket newSocket = new ServerSocket(PORT);
+            ServerSocket newSocket = new ServerSocket(port);
             //  add timeout in the future pls
         ) {
-            //OwnState state = new OwnState("/home/piotr/Pictures");    //  @TODO later move to instance-level
-            System.out.println("test01");
+            serverSocket = newSocket;
             while(!dead){
                 try{
                     Socket socket = newSocket.accept();
                     System.out.println("Socket connection accepted");
                     new Thread(new FileSeeder(state, socket)).run();
                 } catch (IOException e) {
-                    System.err.println("IOException in the inner loop");
+                    System.err.println("Connection interrupted");
                     e.printStackTrace();
                     dead = true;
                 }
@@ -37,7 +38,14 @@ public class Listener implements Runnable{
                 //dead = true;
             }
         } catch (IOException e) {
-            System.err.println("IOException in the outer scope");
+            System.out.println("ServerSocket was closed");
+            e.printStackTrace();
+        }
+    }
+    public void closeServer(){
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
