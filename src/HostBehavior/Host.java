@@ -36,6 +36,7 @@ public class Host {
         fileDownloadCompleted = 0;
         packet = new Packet(null);
         tempFile = null;
+        progressCounterIterator = 0;
     }
     private byte[] dataIn;
     private byte[] temp;
@@ -51,6 +52,7 @@ public class Host {
     private Packet packet;
     private File tempFile;
     private File tempMeta;
+    private int progressCounterIterator;
     //
     protected void connectionLoop(BufferedInputStream in, BufferedOutputStream out) throws IOException, NoSuchAlgorithmException, InterruptedException {
         try {
@@ -124,9 +126,15 @@ public class Host {
                 fileAlreadyExists = false;
             } else {
                 result = filesListAsList.get(choice);
-                if (ownState.getfList().getListing().get(new String(result.getMD5Hash())) != null) {
-                    fileAlreadyExists = true;
-                    System.out.println("Requested file already exists in the downloads directory.");
+                FilesListEntry checkedEntry = (FilesListEntry) ownState.getfList().getListing().get(new String(result.getMD5Hash()));
+                if (checkedEntry != null) {
+                    if(new File(ownState.getDir() + File.separator + checkedEntry.getFilename()).exists()) {
+                        fileAlreadyExists = true;
+                        System.out.println("Requested file already exists in the downloads directory.");
+                    }else{
+                        ownState.getfList().getListing().remove(new String(result.getMD5Hash()));
+                        fileAlreadyExists = false;
+                    }
                 } else
                     fileAlreadyExists = false;
             }
@@ -152,28 +160,33 @@ public class Host {
         String key = new String(Arrays.copyOfRange(packet, 3, 19));
         long startAt = Packet.byteArrToLong(Arrays.copyOfRange(packet, 19, packet.length));
         FilesListEntry file = (FilesListEntry) ownState.getfList().getListing().get(key);
-        System.out.println(ownState.getDir());
-        if(file != null){
-            try (
-                BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream( new File(
-                        "" + ownState.getDir() + File.separator + file.getFilename()))); //lisp lookalike
-            ) {
-                if(startAt > 0) fileIn.skip(startAt);
-                System.out.println("Debug:" + startAt + " AA " + file.getSize());
-                byte sendOut[] = new byte[MAX_PACKET_SIZE];
-                int fileRead;
-                while((fileRead = fileIn.read(sendOut, 0, 1024)) != -1){
-                    out.write(new Payload(Arrays.copyOfRange(sendOut, 0, fileRead)).getPacket());
-                }   //  for the longest time I thought Arrays.copyOfRange() creates an array that points at the existing part
+        //System.out.println(ownState.getDir());
+        boolean fileAvailable = true;
+        if(file != null) {
+            File fileToSeed = new File("" + ownState.getDir() + File.separator + file.getFilename());
+            if (fileToSeed.exists()) {
+                try (
+                        BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(fileToSeed)); //lisp lookalike
+                ) {
+                    if (startAt > 0) fileIn.skip(startAt);
+                    System.out.println("Debug:" + startAt + " AA " + file.getSize());
+                    byte sendOut[] = new byte[MAX_PACKET_SIZE];
+                    int fileRead;
+                    while ((fileRead = fileIn.read(sendOut, 0, 1024)) != -1) {
+                        out.write(new Payload(Arrays.copyOfRange(sendOut, 0, fileRead)).getPacket());
+                    }   //  for the longest time I thought Arrays.copyOfRange() creates an array that points at the existing part
                     //  of the source array, and doesn't actually copy the *values* - too late to turn back now
-            } catch (FileNotFoundException e) {
-                out.write(new Unavailable().getPacket());
-                System.err.println("Requested file was not found");
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+                } catch (FileNotFoundException e) {
+                    out.write(new Unavailable().getPacket());
+                    System.err.println("Requested file was not found");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else fileAvailable = false;
+        }else fileAvailable = false;
+        if(!fileAvailable){
+            ownState.getfList().getListing().remove(key);
             out.write(new Unavailable().getPacket());
         }
         out.flush();
@@ -289,7 +302,10 @@ public class Host {
             throw new FileOperationException();
         }
         fileDownloadCompleted = fileDownloadCompleted + (completedPacket.length - 3);
-        System.out.println(fileDownloadCompleted + " / " + currentFile.getSize());
+        if(progressCounterIterator >= 50 || fileDownloadCompleted==currentFile.getSize()) {
+            System.out.println(fileDownloadCompleted + " / " + currentFile.getSize());
+            progressCounterIterator = 0;
+        } else ++progressCounterIterator;
         if(fileDownloadCompleted >= currentFile.getSize()){
             try {
                 fileOut.flush();
@@ -329,14 +345,14 @@ public class Host {
         tempOut.flush();
         tempOut.close();
     }
-    private int checkForTempFile() throws FileNotFoundException {
+    private int checkForTempFile() {
         ArrayList<TempFilesEntry> tempsList = ownState.getfList().getTempFilesList();
         if(!tempsList.isEmpty()){
             return chooseToContinueDownload(tempsList);
         }
         else return -1;
     }
-    private int chooseToContinueDownload(ArrayList<TempFilesEntry> tempsList) throws FileNotFoundException {
+    private int chooseToContinueDownload(ArrayList<TempFilesEntry> tempsList) {
         System.out.println("There are some unfinished downloads. Do you want to resume them?");
         for(int i=0; i<tempsList.size(); i++){
             System.out.println("" + i + "\t: " + tempsList.get(i).toString());

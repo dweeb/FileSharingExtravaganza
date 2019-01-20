@@ -5,37 +5,22 @@ import java.security.NoSuchAlgorithmException;
 import static Instance.Mode.*;
 
 public class Instance {
-    static Mode mode;
-    static String ownDir;
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        //  program invocation : java -jar JARNAME -m=mode -d=instance\'s\ directory
-        mode = PEER;
-        ownDir = System.getenv("user.dir");
+        int ownPort;
+        String peerAddress;
+        int peerPort;
+        String ownDir;
+        //  program invocation : java -jar JARNAME -p=port -a=peerAddress -d=ownDir
         for(String s : args){
-            if(s.startsWith("-m=")){
-                switch (s.charAt(3)){
-                    case 's' :
-                    case 'S' :
-                        mode = SINGLE_SERVER;
-                        break;
-                    case 'c' :
-                    case 'C' :
-                        mode = SINGLE_CLIENT;
-                        break;
-                    case 'p' :
-                    case 'P' :
-                    default :
-                        mode = PEER;
-                        break;
-                }
+            if(s.startsWith("-p="))
+                ownPort = Integer.parseInt(s.substring(3));
+            if(s.startsWith("-a=")){
+                int delimiter = s.lastIndexOf(':');
+                peerAddress = s.substring(3, delimiter);
+                peerPort = Integer.parseInt(s.substring(delimiter+1));
             }
-            if(s.startsWith("-d=")){
+            if(s.startsWith("-d="))
                 ownDir = s.substring(3);
-            }
-        }
-        switch (mode){
-            case SINGLE_SERVER:
-            case SINGLE_CLIENT:
         }
     }
 }
